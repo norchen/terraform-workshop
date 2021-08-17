@@ -1,0 +1,18 @@
+spring:
+  datasource:
+    initialization-mode: always
+
+---
+spring:
+  profiles: development
+  datasource:
+    url: jdbc:postgresql://localhost:5432/postgres
+    username: rating
+    password: djfgsurt459jdsif
+---
+spring:
+  profiles: staging
+
+---
+spring:
+  profiles: production
