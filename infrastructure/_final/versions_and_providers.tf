@@ -20,16 +20,18 @@
 
 # main region of AWS provider
 provider "aws" {
-  region = var.region
+  region  = var.region
+  profile = "noraschilleprivat"
 
   # these tags will be used for every ressource
   default_tags {
-   tags = {
-     Environment = "test"
-     Owner       = "My Name"
-     Project     = "herbst-campus-terraform-workshop"
-   }
- }
+    tags = {
+      Environment = var.stage
+      Owner       = "My Name"
+      Project     = var.project
+      Name        = local.resource_prefix
+    }
+  }
 }
 
 # example for a provider of another AWS region
@@ -64,7 +66,7 @@ terraform {
     # sets version for AWS Terraform provider
     aws = {
       source  = "hashicorp/aws"
-      version = "~> 3.59.0"
+      version = "~> 3.56.0"
     }
   }
 
