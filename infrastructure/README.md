@@ -11,3 +11,4 @@ Notes:
 RDS:
 * deletion protection can be used
 * storage encrypted => use kms is wanted
+* can't connect directly to rds
