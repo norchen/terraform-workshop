@@ -49,6 +49,13 @@ variable "stage" {
 --------------------------------------------------------------*/
 locals {
   resource_prefix = join("-", [var.project, var.stage])
+
+  rds_instance_allocated_storage      = var.stage == "dev" ? 5 : 10
+  rds_instance_class                  = var.stage == "dev" ? "db.t3.micro" : "db.t3.micro"
+  rds_database_name                   = var.stage == "dev" ? "herbstcampusdbdev" : "herbstcampusdbprod"
+  rds_database_user_name              = "dbuser"
+  rds_database_backup_retetion_period = 14
+  rds_database_deletion_protection    = var.stage == "dev" ? false : true
 }
 
 /*--------------------------------------------------------------
@@ -66,6 +73,24 @@ locals {
 resource "aws_default_vpc" "default" {
   tags = {
     Name = "Default VPC"
+  }
+}
+
+# default subnet a
+resource "aws_default_subnet" "default_az1" {
+  availability_zone = "${var.region}a"
+
+  tags = {
+    Name = "Default subnet for ${var.region}a"
+  }
+}
+
+# default subnet b
+resource "aws_default_subnet" "default_az2" {
+  availability_zone = "${var.region}b"
+
+  tags = {
+    Name = "Default subnet for ${var.region}b"
   }
 }
 
