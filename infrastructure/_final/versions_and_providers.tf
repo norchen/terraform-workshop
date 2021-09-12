@@ -20,7 +20,7 @@
 
 # set provider
 provider "aws" {
-  region  = "us-east-1"
+  region  = var.region
   profile = "profile-name"
 
   # these tags will be used for every ressource
