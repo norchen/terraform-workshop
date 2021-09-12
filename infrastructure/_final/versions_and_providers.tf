@@ -18,10 +18,10 @@
   Otherweise aliases are optional. 
 --------------------------------------------------------------*/
 
-# main region of AWS provider
+# set provider
 provider "aws" {
-  region  = var.region
-  profile = "noraschilleprivat"
+  region  = "us-east-1"
+  profile = "profile-name"
 
   # these tags will be used for every ressource
   default_tags {
