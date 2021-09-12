@@ -1,12 +1,12 @@
 /*--------------------------------------------------------------
-  TERRAFORM WORKSHOP by Sandra Gerberding & Nora Schöner
+  TERRAFORM WORKSHOP by Nora Schöner & Sandra Gerberding
   
   This file defines used providers, their versions and the
   terraform backend.
   
-  Maintainer:   @smily75, @norchen
+  Maintainer:   @norchen, @smily75
   Created:      2021-08-01
-  Last Updated: 2021-08-01
+  Last Updated: 2021-09-12
 --------------------------------------------------------------*/
 
 /*--------------------------------------------------------------
