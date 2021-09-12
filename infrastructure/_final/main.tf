@@ -77,7 +77,7 @@ resource "aws_instance" "server" {
   instance_type = "t4g.micro"
   disable_api_termination = false
 
-            = [aws_security_group.server.id]
+  vpc_security_group_ids = [aws_security_group.server.id]
   # to be in same availability zone as loadbalncer
   subnet_id = aws_default_subnet.default_az1.id
   associate_public_ip_address = true
@@ -154,7 +154,14 @@ resource "aws_security_group" "database" {
     protocol        = "tcp"
     security_groups = [aws_security_group.server.id]
   }
-  
+
+  ingress {
+    from_port       = 3306
+    to_port         = 3306
+    protocol        = "tcp"
+    cidr_blocks = ["0.0.0.0/0"] # set your own IP
+  }
+
   egress {
     from_port   = 0
     to_port     = 0
@@ -163,6 +170,7 @@ resource "aws_security_group" "database" {
   }
 }
 
+# common RDS instance with latest MySQL
 resource "aws_db_instance" "database" {
   identifier              = join("-", [local.resource_prefix, "database"])
   multi_az                = false
@@ -179,6 +187,8 @@ resource "aws_db_instance" "database" {
   backup_retention_period = local.rds_database_backup_retetion_period
   copy_tags_to_snapshot   = true
   apply_immediately       = true
+  vpc_security_group_ids = [aws_security_group.database.id]
+  #publicly_accessible = true
 }
 
 /*--------------------------------------------------------------
@@ -194,7 +204,6 @@ resource "aws_security_group" "loadbalancer" {
     to_port          = 80
     protocol         = "tcp"
     cidr_blocks      = ["0.0.0.0/0"]
-    ipv6_cidr_blocks = ["::/0"]
   }
 
   ingress {
@@ -202,7 +211,6 @@ resource "aws_security_group" "loadbalancer" {
     to_port          = 443
     protocol         = "tcp"
     cidr_blocks      = ["0.0.0.0/0"]
-    ipv6_cidr_blocks = ["::/0"]
   }
 
   egress {
