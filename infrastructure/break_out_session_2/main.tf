@@ -102,3 +102,51 @@ resource "aws_security_group" "server" {
     cidr_blocks = ["0.0.0.0/0"] # set to your personal IP
   }
 }
+
+resource "aws_security_group" "database" {
+  name        = join("-", [local.resource_prefix, "database"])
+  description = "security group for maintaining access to the database"
+  vpc_id      = aws_default_vpc.default.id
+
+  ingress {
+    from_port       = 3306
+    to_port         = 3306
+    protocol        = "tcp"
+    security_groups = [aws_security_group.server.id]
+  }
+
+  ingress {
+    from_port       = 3306
+    to_port         = 3306
+    protocol        = "tcp"
+    cidr_blocks = ["0.0.0.0/0"] # set your own IP
+  }
+
+  egress {
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+}
+
+# common RDS instance with latest MySQL
+resource "aws_db_instance" "database" {
+  identifier              = join("-", [local.resource_prefix, "database"])
+  multi_az                = false
+  allocated_storage       = local.rds_instance_allocated_storage
+  engine                  = "mysql"
+  engine_version          = "8.0.23"
+  parameter_group_name    = "default.mysql8.0"
+  instance_class          = local.rds_instance_class
+  name                    = local.rds_database_name
+  username                = local.rds_database_user_name
+  password                = random_password.database_password.result
+  port                    = 3306
+  skip_final_snapshot     = true
+  backup_retention_period = local.rds_database_backup_retetion_period
+  copy_tags_to_snapshot   = true
+  apply_immediately       = true
+  vpc_security_group_ids = [aws_security_group.database.id]
+  # publicly_accessible = true
+}
