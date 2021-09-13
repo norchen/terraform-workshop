@@ -2,22 +2,20 @@ package blog.gerberding.sandra.rating.talk;
 
 import org.springframework.data.annotation.Id;
 
-import java.util.ArrayList;
-import java.util.List;
-
 public class Talk {
 
   @Id
   private final long id;
 
-  private final String       title;
-  private final String       speaker;
-  private List<Rating> ratingList = new ArrayList<> ();
+  private final String      title;
+  private final String      speaker;
+  private final RatingStars ratingStars;
 
-  public Talk (final long id, final String title, final String speaker) {
-    this.id      = id;
-    this.title   = title;
-    this.speaker = speaker;
+  public Talk (final long id, final String title, final String speaker, final RatingStars ratingStars) {
+    this.id          = id;
+    this.title       = title;
+    this.speaker     = speaker;
+    this.ratingStars = ratingStars;
   }
 
   public long getId () {
@@ -32,15 +30,11 @@ public class Talk {
     return speaker;
   }
 
-  public List<Rating> getRatingList () {
-    return ratingList;
+  public RatingStars getRatingStars () {
+    return ratingStars;
   }
 
-  public void setRatingList (List<Rating> ratingList) {
-    this.ratingList = ratingList;
-  }
-
-  public void addRating (final Rating rating) {
-    ratingList.add (rating);
+  public Talk withRating (final RatingStars ratingStars) {
+    return new Talk (id, title, speaker, ratingStars);
   }
 }

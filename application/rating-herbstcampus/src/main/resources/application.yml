@@ -2,6 +2,10 @@ spring:
   datasource:
     initialization-mode: always
 
+logging:
+  level:
+    blog.gerberding.sandra.rating: debug
+
 ---
 spring:
   profiles: development
