@@ -28,6 +28,6 @@ public class TalkService {
   }
 
   public Iterable<Talk> getTalks () {
-    return talkRepository.findAll ();
+    return talkRepository.findAllByOrderByIdAsc ();
   }
 }
