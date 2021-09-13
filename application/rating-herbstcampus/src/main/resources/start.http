@@ -1,2 +1,17 @@
-GET http://localhost:8080
+GET {{baseURL}}
+###
+
+GET {{baseURL}}/actuator/health
+###
+
+GET {{baseURL}}/actuator
+###
+
+GET {{baseURL}}/actuator/prometheus
+###
+
+GET {{baseURL}}/actuator/metrics
+###
+
+GET {{baseURL}}/talks
 ###

@@ -2,6 +2,27 @@ spring:
   datasource:
     initialization-mode: always
 
+management:
+  metrics:
+    export:
+      prometheus:
+        enabled:         true                  # set this to false to disable prometheus metrics
+    web:
+      server:
+        request:
+          autotime:
+            enabled:     true                  # enables the instrumentation of requests handled by Spring MVC
+            percentiles-histogram: true
+  endpoints:
+    web:
+      exposure:
+        include:         '*'                   # expose all enabled actuator endpoints via web
+  endpoint:
+    health:
+      show-details:                 when_authorized       # always/never/when-authorized
+    heapdump:
+      enabled:                      false
+
 logging:
   level:
     blog.gerberding.sandra.rating: debug
