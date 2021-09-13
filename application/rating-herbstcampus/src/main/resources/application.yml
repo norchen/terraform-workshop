@@ -2,6 +2,7 @@ spring:
   datasource:
     initialization-mode: always
 
+## prometheus config
 management:
   metrics:
     export:
@@ -23,10 +24,12 @@ management:
     heapdump:
       enabled:                      false
 
+## logging
 logging:
   level:
     blog.gerberding.sandra.rating: debug
 
+## ---------------- development profile -------------------
 ---
 spring:
   profiles: development
@@ -34,10 +37,13 @@ spring:
     url: jdbc:postgresql://localhost:5432/postgres
     username: rating
     password: djfgsurt459jdsif
+
+## ---------------- staging profile -------------------
 ---
 spring:
   profiles: staging
 
+## ---------------- production profile -------------------
 ---
 spring:
   profiles: production
