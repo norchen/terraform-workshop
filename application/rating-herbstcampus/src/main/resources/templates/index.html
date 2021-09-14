@@ -18,32 +18,26 @@
   </header>
   <main>
     <h1>Rating Herbstcampus</h1>
-    <p>Include vue js and Bootstrap!</p>
 
     <div id="rating-grid">
       <div id="rating-grid-header">
         <div class="row herbstcampus-petrol grid-border">
-          <div class="col-md-3 themed-grid-col">Speaker</div>
+          <div class="col-md-4 themed-grid-col">Speaker</div>
           <div class="col-md-6 themed-grid-col">Title</div>
-          <div class="col-md-3 themed-grid-col">Rating</div>
+          <div class="col-md-2 themed-grid-col">Rating</div>
         </div>
       </div>
 
-      <div id="rating-grid-body">
-        <div class="row mb-3 herbstcampus-grey grid-border">
-          <div class="col-md-3 themed-grid-col">Speaker</div>
-          <div class="col-md-6 themed-grid-col">Title</div>
-          <div class="col-md-3 themed-grid-col">
-            <rating-stars :id="1" ></rating-stars>
-          </div>
-        </div>
-      </div>
+      <rating-talks></rating-talks>
+
     </div>
   </main>
 </div>
 <script src="js/axios.min.js"></script>
+<script src="js/VueStarRating.umd.min.js"></script>
 <script src="js/vue.min.js"></script>
 <script src="js/rating-stars.js"></script>
+<script src="js/rating-talks.js"></script>
 <script src="js/rating.js"></script>
 </body>
 </html>
