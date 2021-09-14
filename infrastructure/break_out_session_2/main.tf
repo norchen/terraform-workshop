@@ -122,13 +122,6 @@ resource "aws_security_group" "database" {
     security_groups = [aws_security_group.server.id]
   }
 
-  ingress {
-    from_port       = 3306
-    to_port         = 3306
-    protocol        = "tcp"
-    cidr_blocks = ["0.0.0.0/0"] # set your own IP
-  }
-
   egress {
     from_port   = 0
     to_port     = 0
@@ -155,5 +148,4 @@ resource "aws_db_instance" "database" {
   copy_tags_to_snapshot   = true
   apply_immediately       = true
   vpc_security_group_ids = [aws_security_group.database.id]
-  # publicly_accessible = true
 }
