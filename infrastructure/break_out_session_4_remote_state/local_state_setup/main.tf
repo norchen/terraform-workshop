@@ -1,4 +1,12 @@
 /*--------------------------------------------------------------
+  TERRAFORM WORKSHOP by Nora Schöner & Sandra Gerberding
+  
+  This file defines the basic setup for our Terraform S3 backend.
+  
+  Maintainer:   @norchen, @smily75
+--------------------------------------------------------------*/
+
+/*--------------------------------------------------------------
  VERSION PINNING
 --------------------------------------------------------------*/
 terraform {
@@ -45,30 +53,34 @@ locals {
 }
 
 /*--------------------------------------------------------------
- SOME RESOURCES
+ STATE BUCKET
 --------------------------------------------------------------*/
-data "aws_ami" "amazon_linux_2_arm64" {
-  most_recent = true
-  owners      = ["amazon"]
+resource "aws_s3_bucket" "terraform_state_s3_bucket" {
+  bucket = join("-", [local.resource_prefix, "terraform-statefiles", var.region])
 
-  filter {
-    name   = "name"
-    values = ["amzn2-ami-hvm*"]
+  # to version every change to the state
+  # in case of an error or unwanted change in your state 
+  # you can role back to e former state version
+  versioning {
+    enabled = true
   }
 
-  filter {
-    name   = "architecture"
-    values = ["arm64"]
+  # the state shouldn't be destroyed
+  lifecycle {
+    prevent_destroy = true
   }
 }
 
-resource "aws_instance" "server_remote_state" {
-  ami           = data.aws_ami.amazon_linux_2_arm64.image_id
-  instance_type = "t4g.micro"
-  disable_api_termination = false
-  associate_public_ip_address = true
-  # ignore changes when a new aws ami version is chosen
-  lifecycle {
-    ignore_changes = [ami]
+/*--------------------------------------------------------------
+ STATE LOCK DYNAMO TABLE
+--------------------------------------------------------------*/
+resource "aws_dynamodb_table" "terraform_state_locking_dynamodb" {
+  name         = join("-", [local.resource_prefix, "terraform-state-locking"])
+  hash_key     = "LockID"
+  billing_mode = "PAY_PER_REQUEST"
+
+  attribute {
+    name = "LockID"
+    type = "S"
   }
 }
