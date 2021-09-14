@@ -29,6 +29,7 @@ logging:
   level:
     blog.gerberding.sandra.rating: debug
 
+
 ## ---------------- development profile -------------------
 ---
 spring:
