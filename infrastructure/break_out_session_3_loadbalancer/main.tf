@@ -120,11 +120,14 @@ resource "aws_security_group" "server" {
     ipv6_cidr_blocks = ["::/0"]
   }
 
+  # to access application from the internet
+  # TODO: Von welchem Port aus greift der Loadbalancer drauf zu?
   ingress {
-    from_port   = 22
-    to_port     = 22
+    from_port   = 80
+    to_port     = 80
     protocol    = "tcp"
-    cidr_blocks = ["0.0.0.0/0"] # set to your personal IP
+    cidr_blocks = ["0.0.0.0/0"]
+    security_groups = [aws_security_group.loadbalancer.id]
   }
 }
 
@@ -140,13 +143,6 @@ resource "aws_security_group" "database" {
     security_groups = [aws_security_group.server.id]
   }
 
-  ingress {
-    from_port       = 3306
-    to_port         = 3306
-    protocol        = "tcp"
-    cidr_blocks = ["0.0.0.0/0"] # set your own IP
-  }
-
   egress {
     from_port   = 0
     to_port     = 0
@@ -155,6 +151,10 @@ resource "aws_security_group" "database" {
   }
 }
 
+# encryption of database through AWS KMS
+resource "aws_kms_key" "database" {
+  description = "KMS key for my database"
+}
 # common RDS instance with latest MySQL
 resource "aws_db_instance" "database" {
   identifier              = join("-", [local.resource_prefix, "database"])
@@ -173,7 +173,10 @@ resource "aws_db_instance" "database" {
   copy_tags_to_snapshot   = true
   apply_immediately       = true
   vpc_security_group_ids = [aws_security_group.database.id]
-  # publicly_accessible = true
+
+  # encryption
+  storage_encrypted   = true
+  kms_key_id          = aws_kms_key.database.arn
 }
 
 /*--------------------------------------------------------------
@@ -235,6 +238,12 @@ resource "aws_lb_target_group" "server" {
   port     = 80
   protocol = "HTTP"
   vpc_id   = aws_default_vpc.default.id
+
+  health_check {
+    enabled = true
+    path = "/actuator/health"
+    port = 80
+  }
 }
 
 resource "aws_lb_target_group_attachment" "server" {

@@ -95,10 +95,11 @@ resource "aws_security_group" "server" {
     ipv6_cidr_blocks = ["::/0"]
   }
 
+  # to access application from the internet
   ingress {
-    from_port   = 22
-    to_port     = 22
+    from_port   = 80
+    to_port     = 80
     protocol    = "tcp"
-    cidr_blocks = ["0.0.0.0/0"] # set to your personal IP
+    cidr_blocks = ["0.0.0.0/0"]
   }
 }
