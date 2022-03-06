@@ -12,26 +12,30 @@ body {
     font-family: IBMPlexSerif, serif;
     font-weight: bold;
     line-height: 1.2;
-    color:       #9b243e;
+    color: rgba(44, 103, 122, 0.75);
 }
 
-.herbstcampus-yellow {
-    background: rgba(245, 230, 99, 0.3);
+.application-yellow {
+    background: #FFD700;
 }
 
-.herbstcampus-petrol {
+.application-light-grey {
+    background: #ddd;
+}
+
+.application-petrol {
     background: rgba(71, 168, 189, 0.3);
 }
 
-.herbstcampus-rosa {
-    background: rgba(255, 173, 105, 0.3);
+.application-rosa {
+    background: rgba(190, 97, 165, 0.34);
 }
 
-.herbstcampus-blue {
+.application-blue {
     background: rgba(30, 56, 136, 0.3);
 }
 
-.herbstcampus-grey {
+.application-grey {
     background: #f0f0f0;
 }
 
