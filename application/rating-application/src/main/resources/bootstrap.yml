@@ -1,0 +1,6 @@
+---
+spring:
+  profiles: development
+aws:
+  paramstore:
+    enabled: false

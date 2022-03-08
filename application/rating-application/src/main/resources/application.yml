@@ -1,0 +1,50 @@
+spring:
+  datasource:
+    initialization-mode: always
+
+## prometheus config
+management:
+  metrics:
+    export:
+      prometheus:
+        enabled:         true                  # set this to false to disable prometheus metrics
+    web:
+      server:
+        request:
+          autotime:
+            enabled:     true                  # enables the instrumentation of requests handled by Spring MVC
+            percentiles-histogram: true
+  endpoints:
+    web:
+      exposure:
+        include:         '*'                   # expose all enabled actuator endpoints via web
+  endpoint:
+    health:
+      show-details:                 when_authorized       # always/never/when-authorized
+    heapdump:
+      enabled:                      false
+
+## logging
+logging:
+  level:
+    de.workshop.terraform.nora.sandra.rating: debug
+
+
+## ---------------- development profile -------------------
+---
+spring:
+  profiles: development
+  datasource:
+    url: jdbc:postgresql://localhost:5432/postgres
+    username: rating
+    password: djfgsurt459jdsif
+
+## ---------------- staging profile -------------------
+---
+spring:
+  profiles: staging
+
+## ---------------- production profile -------------------
+---
+spring:
+  profiles: production
