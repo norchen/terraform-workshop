@@ -4,8 +4,8 @@ plugins {
     id 'java'
 }
 
-group = 'blog.gerberding.sandra'
-version = '0.0.1-SNAPSHOT'
+group = 'de.workshop.terraform.nora.sandra'
+version = '1.0.0'
 sourceCompatibility = '11'
 
 repositories {
@@ -43,4 +43,8 @@ dependencyManagement {
 
 test {
     useJUnitPlatform()
+}
+
+bootBuildImage {
+    imageName = "${rootProject.name}:$version"
 }

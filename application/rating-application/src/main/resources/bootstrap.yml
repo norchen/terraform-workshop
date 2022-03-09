@@ -4,3 +4,10 @@ spring:
 aws:
   paramstore:
     enabled: false
+
+---
+spring:
+  profiles: container
+aws:
+  paramstore:
+    enabled: false

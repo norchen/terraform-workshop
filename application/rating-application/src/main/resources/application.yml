@@ -39,6 +39,13 @@ spring:
     username: rating
     password: djfgsurt459jdsif
 
+## ---------------- container profile -------------------
+---
+spring:
+  profiles: container
+  datasource:
+    username: rating
+
 ## ---------------- staging profile -------------------
 ---
 spring:
