@@ -17,9 +17,8 @@ sudo service docker start
 
 echo "Get docker image"
 # https://hub.docker.com/r/crccheck/hello-world
-sudo docker pull crccheck/hello-world
-# https://hub.docker.com/r/ninrod/springboot
-sudo docker pull ninrod/springboot:test
+sudo docker pull smily75/rating-application
+
 
 echo "Start docker container"
 # on port 80

@@ -66,7 +66,7 @@ terraform {
     # sets version for AWS Terraform provider
     aws = {
       source  = "hashicorp/aws"
-      version = "~> 3.56.0"
+      version = "~> 4.4.0"
     }
   }
 

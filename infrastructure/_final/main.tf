@@ -56,16 +56,16 @@ resource "aws_default_subnet" "default_az2" {
 --------------------------------------------------------------*/
 data "aws_ami" "amazon_linux_2_arm64" {
   most_recent = true
-  owners      = ["amazon"]
+  owners      = ["099720109477"]
 
   filter {
     name   = "name"
-    values = ["amzn2-ami-hvm*"]
+    values = ["*ubuntu-focal-20.04*"]
   }
 
   filter {
     name   = "architecture"
-    values = ["arm64"]
+    values = ["x86_64"]
   }
 }
 
@@ -74,7 +74,7 @@ data "aws_ami" "amazon_linux_2_arm64" {
 # ---------------------------------------------------
 resource "aws_instance" "server" {
   ami           = data.aws_ami.amazon_linux_2_arm64.image_id
-  instance_type = "t4g.micro"
+  instance_type = "t2.micro"
   disable_api_termination = false
 
   vpc_security_group_ids = [aws_security_group.server.id]
@@ -182,7 +182,7 @@ resource "aws_db_instance" "database" {
   engine_version          = "8.0.23"
   parameter_group_name    = "default.mysql8.0"
   instance_class          = local.rds_instance_class
-  name                    = local.rds_database_name
+  db_name                 = local.rds_database_name
   username                = local.rds_database_user_name
   password                = random_password.database_password.result
   port                    = 3306
