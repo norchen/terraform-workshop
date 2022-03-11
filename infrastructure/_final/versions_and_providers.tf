@@ -21,7 +21,7 @@
 # set provider
 provider "aws" {
   region  = var.region
-  profile = "profile-name"
+  profile = "workshop-test"
 
   # these tags will be used for every ressource
   default_tags {
@@ -36,8 +36,8 @@ provider "aws" {
 
 # example for a provider of another AWS region
 # provider "aws" {
-#   alias  = "us_east_1"
-#   region = "us-east-1"
+#   alias  = "eu-central-1"
+#   region = "eu-central-1"
 # }
 
 
@@ -77,6 +77,6 @@ terraform {
   #  backend "s3" {
   #   bucket = "terraform-state-bucket"
   #   key    = "path/to/my/key.tfstate"
-  #   region = "us-east-1"
+  #   region = "eu-central-1"
   # }
 }

@@ -13,7 +13,7 @@
 --------------------------------------------------------------*/
 provider "aws" {
   region  = var.region
-  profile = "your-aws-profile"
+  profile = "workshop-test"
 
   # these tags will be used for every ressource
   default_tags {
@@ -74,8 +74,8 @@ resource "aws_default_vpc" "default" {
 --------------------------------------------------------------*/
 # server instance
 resource "aws_instance" "server" {
-  ami           = "ami-029c64b3c205e6cce"
-  instance_type = "t4g.micro"
+  ami           = "ami-0d527b8c289b4af7f"
+  instance_type = "t2.micro"
 
   vpc_security_group_ids = [aws_security_group.server.id]
   associate_public_ip_address = true

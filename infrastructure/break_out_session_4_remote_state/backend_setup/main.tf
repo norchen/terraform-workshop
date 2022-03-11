@@ -28,7 +28,7 @@ terraform {
 --------------------------------------------------------------*/
 provider "aws" {
   region  = var.region
-  profile = "your-aws-profile"
+  profile = "workshop-test"
 
   # these tags will be used for every ressource
   default_tags {

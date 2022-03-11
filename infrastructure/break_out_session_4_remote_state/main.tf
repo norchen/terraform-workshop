@@ -7,7 +7,7 @@ terraform {
     # sets version for AWS Terraform provider
     aws = {
       source  = "hashicorp/aws"
-      version = "~> 3.49.0"
+      version = "~> 4.4.0"
     }
   }
 
@@ -20,7 +20,7 @@ terraform {
 --------------------------------------------------------------*/
 provider "aws" {
   region  = var.region
-  profile = "your-aws-profile"
+  profile = "workshop-test"
 
   # these tags will be used for every ressource
   default_tags {
@@ -47,24 +47,24 @@ locals {
 /*--------------------------------------------------------------
  SOME RESOURCES
 --------------------------------------------------------------*/
-data "aws_ami" "amazon_linux_2_arm64" {
+data "aws_ami" "amazon_linux_2_x86_64" {
   most_recent = true
-  owners      = ["amazon"]
+  owners      = ["099720109477"]
 
   filter {
     name   = "name"
-    values = ["amzn2-ami-hvm*"]
+    values = ["*ubuntu-focal-20.04*"]
   }
 
   filter {
     name   = "architecture"
-    values = ["arm64"]
+    values = ["x86_64"]
   }
 }
 
 resource "aws_instance" "server_remote_state" {
-  ami           = data.aws_ami.amazon_linux_2_arm64.image_id
-  instance_type = "t4g.micro"
+  ami           = data.aws_ami.amazon_linux_2_x86_64.image_id
+  instance_type = "t2.micro"
   disable_api_termination = false
   associate_public_ip_address = true
   # ignore changes when a new aws ami version is chosen

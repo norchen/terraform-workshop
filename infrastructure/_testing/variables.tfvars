@@ -1,3 +1,3 @@
-region  = "us-east-2"
-project = "herbstcampus-workshop"
+region  = "eu-central-1"
+project = "terraform-workshop"
 stage   = "dev"
