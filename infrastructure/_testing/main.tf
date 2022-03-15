@@ -179,13 +179,6 @@ resource "aws_security_group" "server" {
     cidr_blocks = ["0.0.0.0/0"]
     #security_groups = [aws_security_group.loadbalancer.id]
   }
-  ingress {
-    from_port   = 8080
-    to_port     = 8080
-    protocol    = "tcp"
-    cidr_blocks = ["0.0.0.0/0"]
-    #security_groups = [aws_security_group.loadbalancer.id]
-  }
 
   ingress {
     from_port   = 22
@@ -207,16 +200,33 @@ resource "aws_security_group" "server" {
    If you want to use a simple (secret) password setup for
    your DB you can use SSM Parameters and Terraform's random generator.
 */
-/* resource "random_password" "database_password" {
+resource "random_password" "database_password" {
   length  = 16
-  special = true
+  special = false
+}
+
+resource "aws_ssm_parameter" "database_username" {
+// /config/terraform-workshop_production/spring.datasource.username
+  name        = join("/", ["/config", local.spring_boot_project_stage_identifier, "spring.datasource.username"])
+  description = "username for my database"
+  type        = "String"
+  value       = aws_db_instance.database.username
 }
 
 resource "aws_ssm_parameter" "database_password" {
-  name        = join("/", ["", var.project, var.stage, "database", "password"])
+// /config/terraform-workshop_production/spring.datasource.password
+  name        = join("/", ["/config", local.spring_boot_project_stage_identifier, "spring.datasource.password"])
   description = "password for my database"
   type        = "SecureString"
   value       = random_password.database_password.result
+}
+
+resource "aws_ssm_parameter" "database_url" {
+  // /config/terraform-workshop_production/spring.datasource.url
+  name        = join("/", ["/config", local.spring_boot_project_stage_identifier, "spring.datasource.url"])
+  description = "url for my database"
+  type        = "String"
+  value       = join("", ["jdbc:postgresql://", aws_db_instance.database.endpoint, ":", aws_db_instance.database.port, "/", aws_db_instance.database.db_name])
 }
 
 resource "aws_security_group" "database" {
@@ -225,8 +235,8 @@ resource "aws_security_group" "database" {
   vpc_id      = aws_default_vpc.default.id
 
   ingress {
-    from_port       = 3306
-    to_port         = 3306
+    from_port       = 5432
+    to_port         = 5432
     protocol        = "tcp"
     security_groups = [aws_security_group.server.id]
   }
@@ -238,11 +248,11 @@ resource "aws_security_group" "database" {
     cidr_blocks = ["0.0.0.0/0"]
   }
 }
-*/
+
 /*--------------------------------------------------------------
   encryption of database through AWS KMS
 --------------------------------------------------------------*/
-/*resource "aws_kms_key" "database" {
+resource "aws_kms_key" "database" {
   description = "KMS key for my database"
 }
 
@@ -251,14 +261,14 @@ resource "aws_db_instance" "database" {
   identifier              = join("-", [local.resource_prefix, "database"])
   multi_az                = false
   allocated_storage       = local.rds_instance_allocated_storage
-  engine                  = "mysql"
-  engine_version          = "8.0.23"
-  parameter_group_name    = "default.mysql8.0"
+  engine                  = "postgres"
+  engine_version          = "14.1"
+  parameter_group_name    = "default.postgres14"
   instance_class          = local.rds_instance_class
-  name                    = local.rds_database_name
+  db_name                 = local.rds_database_name
   username                = local.rds_database_user_name
   password                = random_password.database_password.result
-  port                    = 3306
+  port                    = 5432
   skip_final_snapshot     = true
   backup_retention_period = local.rds_database_backup_retetion_period
   copy_tags_to_snapshot   = true
@@ -269,11 +279,11 @@ resource "aws_db_instance" "database" {
   storage_encrypted   = true
   kms_key_id          = aws_kms_key.database.arn
 }
- */
+
 /*--------------------------------------------------------------
   Loadbalancer
 --------------------------------------------------------------*/
-/* resource "aws_security_group" "loadbalancer" {
+resource "aws_security_group" "loadbalancer" {
   name        = join("-", [local.resource_prefix, "lb"])
   description = "loadbalancer for my server"
   vpc_id      = aws_default_vpc.default.id
@@ -339,4 +349,4 @@ resource "aws_lb_target_group_attachment" "server" {
   target_group_arn = aws_lb_target_group.server.arn
   target_id        = aws_instance.server.id
   port             = 80
-} */
+}

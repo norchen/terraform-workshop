@@ -21,7 +21,7 @@
 # set provider
 provider "aws" {
   region  = var.region
-  profile = "nora-admin"
+  profile = "devops-tools-non-prod"
 
   # these tags will be used for every ressource
   default_tags {
@@ -71,7 +71,7 @@ terraform {
   }
 
   # sets Terraform version
-  required_version = ">= 1.1"
+  required_version = ">= 1.0.0 "
 
   # remote state configuration; if nothing is specified local state is used by default 
   #  backend "s3" {

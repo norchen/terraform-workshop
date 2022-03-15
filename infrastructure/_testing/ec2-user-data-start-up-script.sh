@@ -17,11 +17,9 @@ sudo service docker start
 
 echo "Get docker image"
 # https://hub.docker.com/r/crccheck/hello-world
-sudo docker pull smily75/rating-application
+sudo docker pull smily75/rating-application:1.0.0
 
 
 echo "Start docker container"
 # on port 80
-sudo docker run -d --rm --name web-test -p 80:8000 crccheck/hello-world
-# on port 8080
-docker run -d -p 8080:8080 ninrod/springboot:test java -jar /home/ninrod/delivery/ninrod-spring-boot-test-0.1.2.3.jar
+sudo docker run -d --rm --name rating-application -p 80:8080 smily75/rating-application
