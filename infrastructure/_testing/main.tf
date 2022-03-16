@@ -131,11 +131,11 @@ resource "aws_iam_role_policy_attachment" "ssm_session_instance_profile" {
 # ---------------------------------------------------
 resource "aws_instance" "server" {
   ami           = data.aws_ami.amazon_linux_2_arm64.image_id
-  instance_type = "t2.micro"
+  instance_type = "t2.small"
   disable_api_termination = false
 
   vpc_security_group_ids = [aws_security_group.server.id]
-  # to be in same availability zone as loadbalncer
+  # to be in same availability zone as loadbalancer
   subnet_id = aws_default_subnet.default_az1.id
   associate_public_ip_address = true
 
