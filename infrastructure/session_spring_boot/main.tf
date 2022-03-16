@@ -56,17 +56,74 @@ resource "aws_default_subnet" "default_az2" {
 --------------------------------------------------------------*/
 data "aws_ami" "amazon_linux_2_arm64" {
   most_recent = true
-  owners      = ["099720109477"]
+  owners      = ["amazon"]
 
   filter {
     name   = "name"
-    values = ["*ubuntu-focal-20.04*"]
+    values = ["amzn2-ami-hvm*"]
   }
 
-  filter {
-    name   = "architecture"
-    values = ["x86_64"]
-  }
+  # filter {
+  #   name   = "architecture"
+  #   values = ["arm64"]
+  # }
+}
+
+# instance role for session manager
+resource "aws_iam_instance_profile" "ssm_session_instance_profile" {
+  name = "ssm_session_manager_profile"
+  role = aws_iam_role.ssm_session_instance_profile.name
+}
+
+resource "aws_iam_role" "ssm_session_instance_profile" {
+  name               = "ssm_session_manager_role"
+  assume_role_policy = <<EOF
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Action": "sts:AssumeRole",
+      "Principal": {
+        "Service": "ec2.amazonaws.com"
+      },
+      "Effect": "Allow",
+      "Sid": ""
+    }
+  ]
+}
+EOF
+}
+
+resource "aws_iam_policy" "ssm_session_instance_profile" {
+  name        = "ssm_session_manager_policy"
+  description = "A policy to access an EC2 instance over SSM Session Manager"
+
+  policy = <<EOF
+{ 
+    "Version": "2012-10-17", 
+    "Statement": [ 
+        { 
+            "Effect": "Allow", 
+            "Action": [ 
+                "ssm:UpdateInstanceInformation",
+                "ssm:GetParametersByPath",
+                "ssm:GetParameters",
+                "ssm:GetParameter",
+                "ssmmessages:CreateControlChannel", 
+                "ssmmessages:CreateDataChannel", 
+                "ssmmessages:OpenControlChannel", 
+                "ssmmessages:OpenDataChannel"
+            ], 
+            "Resource": "*" 
+        }
+    ] 
+} 
+EOF
+}
+
+resource "aws_iam_role_policy_attachment" "ssm_session_instance_profile" {
+  role       = aws_iam_role.ssm_session_instance_profile.name
+  policy_arn = aws_iam_policy.ssm_session_instance_profile.arn
 }
 
 # ---------------------------------------------------
@@ -74,11 +131,11 @@ data "aws_ami" "amazon_linux_2_arm64" {
 # ---------------------------------------------------
 resource "aws_instance" "server" {
   ami           = data.aws_ami.amazon_linux_2_arm64.image_id
-  instance_type = "t2.micro"
+  instance_type = "t2.small"
   disable_api_termination = false
 
   vpc_security_group_ids = [aws_security_group.server.id]
-  # to be in same availability zone as loadbalncer
+  # to be in same availability zone as loadbalancer
   subnet_id = aws_default_subnet.default_az1.id
   associate_public_ip_address = true
 
@@ -86,6 +143,10 @@ resource "aws_instance" "server" {
   lifecycle {
     ignore_changes = [ami]
   }
+
+  # server start-up script 
+  user_data = file("ec2-user-data-start-up-script.sh")
+  iam_instance_profile = aws_iam_instance_profile.ssm_session_instance_profile.name
 }
 
 /*--------------------------------------------------------------
@@ -119,7 +180,15 @@ resource "aws_security_group" "server" {
     to_port     = 80
     protocol    = "tcp"
     cidr_blocks = ["0.0.0.0/0"]
-    security_groups = [aws_security_group.loadbalancer.id]
+    #security_groups = [aws_security_group.loadbalancer.id]
+  }
+
+  ingress {
+    from_port   = 22
+    to_port     = 22
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+    #security_groups = [aws_security_group.loadbalancer.id]
   }
 }
 
@@ -136,14 +205,31 @@ resource "aws_security_group" "server" {
 */
 resource "random_password" "database_password" {
   length  = 16
-  special = true
+  special = false
+}
+
+resource "aws_ssm_parameter" "database_username" {
+// /config/terraform-workshop_production/spring.datasource.username
+  name        = join("/", ["/config", local.spring_boot_project_stage_identifier, "spring.datasource.username"])
+  description = "username for my database"
+  type        = "String"
+  value       = aws_db_instance.database.username
 }
 
 resource "aws_ssm_parameter" "database_password" {
-  name        = join("/", ["", var.project, var.stage, "database", "password"])
+// /config/terraform-workshop_production/spring.datasource.password
+  name        = join("/", ["/config", local.spring_boot_project_stage_identifier, "spring.datasource.password"])
   description = "password for my database"
   type        = "SecureString"
   value       = random_password.database_password.result
+}
+
+resource "aws_ssm_parameter" "database_url" {
+  // /config/terraform-workshop_production/spring.datasource.url
+  name        = join("/", ["/config", local.spring_boot_project_stage_identifier, "spring.datasource.url"])
+  description = "url for my database"
+  type        = "String"
+  value       = join("", ["jdbc:postgresql://", aws_db_instance.database.endpoint, "/", aws_db_instance.database.db_name])
 }
 
 resource "aws_security_group" "database" {
@@ -152,8 +238,8 @@ resource "aws_security_group" "database" {
   vpc_id      = aws_default_vpc.default.id
 
   ingress {
-    from_port       = 3306
-    to_port         = 3306
+    from_port       = 5432
+    to_port         = 5432
     protocol        = "tcp"
     security_groups = [aws_security_group.server.id]
   }
@@ -178,14 +264,14 @@ resource "aws_db_instance" "database" {
   identifier              = join("-", [local.resource_prefix, "database"])
   multi_az                = false
   allocated_storage       = local.rds_instance_allocated_storage
-  engine                  = "mysql"
-  engine_version          = "8.0.23"
-  parameter_group_name    = "default.mysql8.0"
+  engine                  = "postgres"
+  engine_version          = "14.1"
+  parameter_group_name    = "default.postgres14"
   instance_class          = local.rds_instance_class
   db_name                 = local.rds_database_name
   username                = local.rds_database_user_name
   password                = random_password.database_password.result
-  port                    = 3306
+  port                    = 5432
   skip_final_snapshot     = true
   backup_retention_period = local.rds_database_backup_retetion_period
   copy_tags_to_snapshot   = true

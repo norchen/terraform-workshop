@@ -8,7 +8,55 @@
   Created:      2021-08-01
   Last Updated: 2021-09-12
 --------------------------------------------------------------*/
+/*--------------------------------------------------------------
+  PROVIDER
+--------------------------------------------------------------*/
+provider "aws" {
+  region  = var.region
+  profile = "workshop-test"
 
+  # these tags will be used for every ressource
+  default_tags {
+    tags = {
+      Environment = var.stage
+      Owner       = "My Name"
+      Project     = var.project
+      Name        = local.resource_prefix
+    }
+  }
+}
+
+/*--------------------------------------------------------------
+  VARIABLES
+--------------------------------------------------------------*/
+variable "region" {
+  type        = string
+  description = "the region used for the (main) provider"
+}
+
+variable "project" {
+  type        = string
+  description = "the name of the project the resources are associated to"
+}
+
+variable "stage" {
+  type        = string
+  description = "the name of the environment aka stage the resources are associated to"
+}
+
+/*--------------------------------------------------------------
+  LOCALS
+--------------------------------------------------------------*/
+locals {
+  resource_prefix = join("-", [var.project, var.stage])
+
+  rds_instance_allocated_storage      = var.stage == "dev" ? 5 : 10
+  rds_instance_class                  = var.stage == "dev" ? "db.t3.micro" : "db.t3.micro"
+  rds_database_name                   = var.stage == "dev" ? "workshopdbdev" : "workshopdbprod"
+  rds_database_user_name              = "dbuser"
+  rds_database_backup_retetion_period = 14
+  rds_database_deletion_protection    = var.stage == "dev" ? false : true
+}
 
 /*--------------------------------------------------------------
   NETWORK
@@ -47,58 +95,18 @@ resource "aws_default_subnet" "default_az2" {
 }
 
 /*--------------------------------------------------------------
-  EC2 - Server Instance
+  EC2
 --------------------------------------------------------------*/
-/*--------------------------------------------------------------
-  Amazon Linux 2 AMI (Amazon Machine Image)
-  💡 This is the AMI which will be used for the EC2 unstance.
-     To use the t4g.micro instance a ARM64 AMI is needed.
---------------------------------------------------------------*/
-data "aws_ami" "amazon_linux_2_arm64" {
-  most_recent = true
-  owners      = ["099720109477"]
-
-  filter {
-    name   = "name"
-    values = ["*ubuntu-focal-20.04*"]
-  }
-
-  filter {
-    name   = "architecture"
-    values = ["x86_64"]
-  }
-}
-
-# ---------------------------------------------------
-# EC2 Instance
-# ---------------------------------------------------
+# server instance
 resource "aws_instance" "server" {
-  ami           = data.aws_ami.amazon_linux_2_arm64.image_id
+  ami           = "ami-0d527b8c289b4af7f"
   instance_type = "t2.micro"
-  disable_api_termination = false
 
   vpc_security_group_ids = [aws_security_group.server.id]
-  # to be in same availability zone as loadbalncer
-  subnet_id = aws_default_subnet.default_az1.id
   associate_public_ip_address = true
-
-  # ignore changes when a new aws ami version is chosen
-  lifecycle {
-    ignore_changes = [ami]
-  }
 }
 
-/*--------------------------------------------------------------
- EC2: Key Pair (optional)
---------------------------------------------------------------*/
-# resource "aws_key_pair" "server" {
-#   key_name   = join("-", [local.resource_prefix, "server"])
-#   public_key = var.ec2_key_pair_public_key
-# }
-
-/*--------------------------------------------------------------
- EC2: Security Group
---------------------------------------------------------------*/
+#security group
 resource "aws_security_group" "server" {
   name        = join("-", [local.resource_prefix, "server"])
   description = "security group for managing access for my server"
@@ -124,27 +132,8 @@ resource "aws_security_group" "server" {
 }
 
 /*--------------------------------------------------------------
-  RDS - Database Instance
+  Database
 --------------------------------------------------------------*/
-/*--------------------------------------------------------------
-  MySQL RDS
-    - only used for TK at the moment 
---------------------------------------------------------------*/
-/* ✨ [OPTIONAL] 
-   If you want to use a simple (secret) password setup for
-   your DB you can use SSM Parameters and Terraform's random generator.
-*/
-resource "random_password" "database_password" {
-  length  = 16
-  special = true
-}
-
-resource "aws_ssm_parameter" "database_password" {
-  name        = join("/", ["", var.project, var.stage, "database", "password"])
-  description = "password for my database"
-  type        = "SecureString"
-  value       = random_password.database_password.result
-}
 
 resource "aws_security_group" "database" {
   name        = join("-", [local.resource_prefix, "database"])
@@ -166,13 +155,15 @@ resource "aws_security_group" "database" {
   }
 }
 
-/*--------------------------------------------------------------
-  encryption of database through AWS KMS
---------------------------------------------------------------*/
+resource "random_password" "database_password" {
+  length  = 16
+  special = true
+}
+
+# encryption of database through AWS KMS
 resource "aws_kms_key" "database" {
   description = "KMS key for my database"
 }
-
 # common RDS instance with latest MySQL
 resource "aws_db_instance" "database" {
   identifier              = join("-", [local.resource_prefix, "database"])
@@ -210,6 +201,7 @@ resource "aws_security_group" "loadbalancer" {
     to_port          = 80
     protocol         = "tcp"
     cidr_blocks      = ["0.0.0.0/0"]
+    ipv6_cidr_blocks = ["::/0"]
   }
 
   ingress {
@@ -217,6 +209,7 @@ resource "aws_security_group" "loadbalancer" {
     to_port          = 443
     protocol         = "tcp"
     cidr_blocks      = ["0.0.0.0/0"]
+    ipv6_cidr_blocks = ["::/0"]
   }
 
   egress {
