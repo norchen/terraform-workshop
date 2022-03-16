@@ -105,11 +105,14 @@ resource "aws_iam_policy" "ssm_session_instance_profile" {
         { 
             "Effect": "Allow", 
             "Action": [ 
-                "ssm:UpdateInstanceInformation", 
+                "ssm:UpdateInstanceInformation",
+                "ssm:GetParametersByPath",
+                "ssm:GetParameters",
+                "ssm:GetParameter",
                 "ssmmessages:CreateControlChannel", 
                 "ssmmessages:CreateDataChannel", 
                 "ssmmessages:OpenControlChannel", 
-                "ssmmessages:OpenDataChannel" 
+                "ssmmessages:OpenDataChannel"
             ], 
             "Resource": "*" 
         }
