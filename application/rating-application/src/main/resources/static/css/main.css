@@ -1,0 +1,45 @@
+body {
+    font-family:      'Open Sans', sans-serif;
+    font-size:        18px;
+    line-height:      1.8;
+    color:            #6b6b6b;
+    font-weight:      normal;
+    padding-top:      50px;
+    background:       #fff;
+}
+
+.h1, .h2, .h3, .h4, .h5, .h6, h1, h2, h3, h4, h5, h6 {
+    font-family: IBMPlexSerif, serif;
+    font-weight: bold;
+    line-height: 1.2;
+    color: rgba(44, 103, 122, 0.75);
+}
+
+.application-yellow {
+    background: #FFD700;
+}
+
+.application-light-grey {
+    background: #ddd;
+}
+
+.application-petrol {
+    background: rgba(71, 168, 189, 0.3);
+}
+
+.application-rosa {
+    background: rgba(190, 97, 165, 0.34);
+}
+
+.application-blue {
+    background: rgba(30, 56, 136, 0.3);
+}
+
+.application-grey {
+    background: #f0f0f0;
+}
+
+.grid-border {
+    border-bottom: 1px solid #6b6b6b;
+}
+

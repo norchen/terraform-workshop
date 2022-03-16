@@ -1,0 +1,19 @@
+version: '3'
+services:
+  rating-application:
+    image: smily75/rating-application:1.0.0
+    container_name: rating-application
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://rating-db:5432/postgres
+      - SPRING_PROFILES_ACTIVE=container
+      - SPRING_DATASOURCE_PASSWORD=djfgsurt459jdsif
+    ports:
+      - 8080:8080
+
+  rating-db:
+    image: smily75/rating-postgres:1.0.0
+    container_name: rating-db
+    environment:
+      - POSTGRES_PASSWORD=djfgsurt459jdsif
+      - POSTGRES_USER=rating
+
