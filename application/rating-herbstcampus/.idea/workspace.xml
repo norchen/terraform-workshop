@@ -4,41 +4,8 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="f5f00075-48c6-4eea-895a-e4eb4e67abed" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/build.gradle" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/rating-herbstcampus-0.0.1-SNAPSHOT.jar" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/docker-database-command.txt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/gradle/wrapper/gradle-wrapper.jar" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/gradle/wrapper/gradle-wrapper.properties" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/gradlew" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/gradlew.bat" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/settings.gradle" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/blog/gerberding/sandra/rating/RatingHerbstcampusApplication.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/blog/gerberding/sandra/rating/StartController.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/blog/gerberding/sandra/rating/talk/RatingStars.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/blog/gerberding/sandra/rating/talk/Talk.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/blog/gerberding/sandra/rating/talk/TalkController.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/blog/gerberding/sandra/rating/talk/TalkFixtureService.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/blog/gerberding/sandra/rating/talk/TalkRepository.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/blog/gerberding/sandra/rating/talk/TalkService.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/application.yml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/bootstrap.yml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/http-client.env.json" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/schema.sql" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/start.http" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/static/css/main.css" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/static/js/VueStarRating.umd.min.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/static/js/axios.min.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/static/js/axios.min.map" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/static/js/rating-stars.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/static/js/rating-talks.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/static/js/rating.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/static/js/vue.min.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/templates/index.html" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/java/blog/gerberding/sandra/rating/RatingHerbstcampusApplicationTests.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/resources/bootstrap-aws.properties" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/resources/bootstrap.properties" beforeDir="false" />
+    <list default="true" id="549a707f-eb8f-4e52-9b9f-2729c6d018eb" name="Default Changelist" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />

@@ -1,4 +1,6 @@
 spring:
+  application:
+    name: terraform-workshop
   datasource:
     initialization-mode: always
 
@@ -33,7 +35,7 @@ logging:
 ## ---------------- development profile -------------------
 ---
 spring:
-  profiles: development
+  profiles: "development"
   datasource:
     url: jdbc:postgresql://localhost:5432/postgres
     username: rating
@@ -42,16 +44,16 @@ spring:
 ## ---------------- container profile -------------------
 ---
 spring:
-  profiles: container
+  profiles: "container"
   datasource:
     username: rating
 
 ## ---------------- staging profile -------------------
 ---
 spring:
-  profiles: staging
+  profiles: "staging"
 
 ## ---------------- production profile -------------------
 ---
 spring:
-  profiles: production
+  profiles: "production"
