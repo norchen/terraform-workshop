@@ -22,4 +22,4 @@ sudo docker pull smily75/rating-application:1.0.0
 
 echo "Start docker container"
 # on port 80
-sudo docker run -d --rm -e SPRING_PROFILES_ACTIVE=production --name rating-application -p 80:8080 smily75/rating-application:1.0.0
+sudo docker run -d -e SPRING_PROFILES_ACTIVE=production --name rating-application -p 80:8080 smily75/rating-application:1.0.0

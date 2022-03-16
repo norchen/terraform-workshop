@@ -229,7 +229,7 @@ resource "aws_ssm_parameter" "database_url" {
   name        = join("/", ["/config", local.spring_boot_project_stage_identifier, "spring.datasource.url"])
   description = "url for my database"
   type        = "String"
-  value       = join("", ["jdbc:postgresql://", aws_db_instance.database.endpoint, ":", aws_db_instance.database.port, "/", aws_db_instance.database.db_name])
+  value       = join("", ["jdbc:postgresql://", aws_db_instance.database.endpoint, "/", aws_db_instance.database.db_name])
 }
 
 resource "aws_security_group" "database" {

@@ -19,7 +19,7 @@
 --------------------------------------------------------------*/
 locals {
   resource_prefix                      = join("-", [var.project, substr(var.stage, 0, 4)])
-  spring_boot_project_stage_identifier = join("-", [var.project, var.stage])
+  spring_boot_project_stage_identifier = join("_", [var.project, var.stage])
 
   /*--------------------------------------------------------------
     RDS (database)
