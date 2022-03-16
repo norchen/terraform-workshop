@@ -57,3 +57,8 @@ spring:
 ---
 spring:
   profiles: "production"
+
+cloud:
+  aws:
+    region:
+      static: eu-central-1

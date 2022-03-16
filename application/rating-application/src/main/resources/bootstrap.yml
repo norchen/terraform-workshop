@@ -11,3 +11,15 @@ spring:
 aws:
   paramstore:
     enabled: false
+
+---
+spring:
+  profiles: production
+  application:
+    name: terraform-workshop
+
+aws:
+  paramstore:
+    prefix: /config
+    defaultContext: application
+    profileSeparator: _
